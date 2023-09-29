@@ -144,6 +144,41 @@ class _NewExpenseState extends State<NewExpense> {
     }
   }
 
+  void _showerror() {
+    if (Platform.isIOS) {
+      showCupertinoDialog(
+          context: context,
+          builder: (ctx) => CupertinoAlertDialog(
+                title: const Text('Invalid Input'),
+                content: const Text('Please Enter a Valid Input'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(ctx);
+                    },
+                    child: const Text('OK'),
+                  )
+                ],
+              ));
+    } else {
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text('Invalid Input'),
+          content: const Text('Please Enter a Valid Input'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(ctx);
+              },
+              child: const Text('OK'),
+            )
+          ],
+        ),
+      );
+    }
+  }
+
   void _submitExpenseData() {
     final enteredAmount = double.tryParse(_amountController.text);
     final amountIsInvalid = enteredAmount == null || enteredAmount <= 0;
@@ -164,6 +199,8 @@ class _NewExpenseState extends State<NewExpense> {
               !amountIsInvalid &&
               _selectedDate == null) {
             _showdateDialog();
+          } else {
+            _showerror();
           }
         }
       }
