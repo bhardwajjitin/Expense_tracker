@@ -39,14 +39,13 @@ class _NewExpenseState extends State<NewExpense> {
     });
   }
 
-  void _showDialog() {
+  void _showtitleDialog() {
     if (Platform.isIOS) {
       showCupertinoDialog(
           context: context,
           builder: (ctx) => CupertinoAlertDialog(
                 title: const Text('Invalid Input'),
-                content: const Text(
-                    'Please Make Sure a Valid Title,Amount,Date and Category was Entered'),
+                content: const Text('Please Make Sure to Enter a Valid Title'),
                 actions: [
                   TextButton(
                     onPressed: () {
@@ -61,8 +60,77 @@ class _NewExpenseState extends State<NewExpense> {
         context: context,
         builder: (ctx) => AlertDialog(
           title: const Text('Invalid Input'),
-          content: const Text(
-              'Please Make Sure a Valid Title,Amount,Date and Category was Entered'),
+          content: const Text('Please Make Sure to Enter a Valid Title'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(ctx);
+              },
+              child: const Text('OK'),
+            )
+          ],
+        ),
+      );
+    }
+  }
+
+  void _showamountDialog() {
+    if (Platform.isIOS) {
+      showCupertinoDialog(
+          context: context,
+          builder: (ctx) => CupertinoAlertDialog(
+                title: const Text('Invalid Input'),
+                content: const Text('Please Make Sure to Enter a Valid Amount'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(ctx);
+                    },
+                    child: const Text('OK'),
+                  )
+                ],
+              ));
+    } else {
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text('Invalid Input'),
+          content: const Text('Please Make Sure to Enter a Valid Amount'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(ctx);
+              },
+              child: const Text('OK'),
+            )
+          ],
+        ),
+      );
+    }
+  }
+
+  void _showdateDialog() {
+    if (Platform.isIOS) {
+      showCupertinoDialog(
+          context: context,
+          builder: (ctx) => CupertinoAlertDialog(
+                title: const Text('Invalid Input'),
+                content: const Text('Please Enter a Date'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(ctx);
+                    },
+                    child: const Text('OK'),
+                  )
+                ],
+              ));
+    } else {
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text('Invalid Input'),
+          content: const Text('Please Enter a Date'),
           actions: [
             TextButton(
               onPressed: () {
@@ -82,7 +150,23 @@ class _NewExpenseState extends State<NewExpense> {
     if (_titleController.text.trim().isEmpty ||
         amountIsInvalid ||
         _selectedDate == null) {
-      _showDialog();
+      if (_titleController.text.trim().isEmpty &&
+          !amountIsInvalid &&
+          _selectedDate != null) {
+        _showtitleDialog();
+      } else {
+        if (_titleController.text.trim().isNotEmpty &&
+            amountIsInvalid &&
+            _selectedDate != null) {
+          _showamountDialog();
+        } else {
+          if (_titleController.text.trim().isNotEmpty &&
+              !amountIsInvalid &&
+              _selectedDate == null) {
+            _showdateDialog();
+          }
+        }
+      }
       return;
     }
 
